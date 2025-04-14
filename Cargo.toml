@@ -10,4 +10,7 @@ license = "MIT/Apache-2.0"
 keywords = ["FEC", "ErrorCorrection", "FountainCode"]
 
 [dependencies]
-rand = "0.3.14"
+rand = "0.8.5"
+
+[target.wasm32-unknown-unknown]
+rustflags = ['--cfg', 'getrandom_backend="wasm_js"']

@@ -2,7 +2,9 @@ use std::vec::Vec;
 use std::cell::RefCell;
 use std::rc::Rc;
 use std::cmp;
-use rand::{Rng, sample, StdRng, SeedableRng};
+use rand::prelude::*;  // 使用prelude导入常用trait和类型
+use rand::rngs::StdRng;  // 明确导入StdRng
+use rand::seq::IteratorRandom;  // 用于替代sample方法
 
 use soliton::IdealSoliton;
 
@@ -88,11 +90,12 @@ impl Encoder {
     /// }
     /// ```
     pub fn new(data: Vec<u8>, blocksize: usize, encodertype: EncoderType) -> Encoder {
-        let mut rng = StdRng::new().unwrap();
+        // 使用 SeedableRng::from_entropy() 替代 new()
+        let mut rng = StdRng::from_entropy();
 
         let len = data.len();
         let cnt_blocks = ((len as f32) / blocksize as f32).ceil() as usize;
-        let sol = IdealSoliton::new(cnt_blocks, rng.gen::<usize>());
+        let sol = IdealSoliton::new(cnt_blocks, 13);
         Encoder {
             data: data,
             len: len,
@@ -107,9 +110,9 @@ impl Encoder {
 }
 
 fn get_sample_from_rng_by_seed(seed: usize, n: usize, degree: usize) -> Vec<usize> {
-    let seedarr: &[_] = &[seed];
-    let mut rng: StdRng = SeedableRng::from_seed(seedarr);
-    sample(&mut rng, 0..n, degree)
+    // 使用 seed_from_u64 替代 from_seed
+    let mut rng = StdRng::seed_from_u64(seed as u64);
+    (0..n).choose_multiple(&mut rng, degree)
 }
 
 impl Iterator for Encoder {

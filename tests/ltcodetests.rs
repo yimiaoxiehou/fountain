@@ -5,10 +5,15 @@ use self::fountaincode::ltcode::{Encoder, EncoderType, Decoder};
 use self::fountaincode::ltcode::CatchResult::*;
 
 use rand::{thread_rng, Rng};
+use rand::distributions::Alphanumeric;
 
 
 fn encode_decode_random(total_len: usize, chunk_len: usize) {
-    let s:String = thread_rng().gen_ascii_chars().take(total_len).collect();
+    let s: String = thread_rng()
+        .sample_iter(&Alphanumeric)
+        .take(total_len)
+        .map(char::from)
+        .collect();
     let buf = s.into_bytes();
     let len = buf.len();
     let to_compare = buf.clone();
@@ -35,7 +40,11 @@ fn encode_decode_random(total_len: usize, chunk_len: usize) {
 }
 
 fn encode_decode_systematic(total_len: usize, chunk_len: usize) {
-    let s:String = thread_rng().gen_ascii_chars().take(total_len).collect();
+    let s: String = thread_rng()
+    .sample_iter(&Alphanumeric)
+    .take(total_len)
+    .map(char::from)
+    .collect();
     let buf = s.into_bytes();
     let len = buf.len();
     let to_compare = buf.clone();
@@ -65,7 +74,12 @@ fn encode_decode_systematic(total_len: usize, chunk_len: usize) {
 }
 
 fn encode_decode_systematic_with_loss(total_len: usize, chunk_len: usize, loss: f32) {
-    let s:String = thread_rng().gen_ascii_chars().take(total_len).collect();
+    let s: String = thread_rng()
+        .sample_iter(&Alphanumeric)
+        .take(total_len)
+        .map(char::from)
+        .collect();
+
     let buf = s.into_bytes();
     let len = buf.len();
     let to_compare = buf.clone();
@@ -76,7 +90,7 @@ fn encode_decode_systematic_with_loss(total_len: usize, chunk_len: usize, loss: 
     let mut loss_rng = thread_rng();
 
     for drop in enc {
-        if loss_rng.next_f32() > loss {
+        if loss_rng.gen::<f32>() > loss {
             match dec.catch(drop) {
                 Missing(_) => {
                     //a systematic encoder and no loss on channel should only need k symbols
