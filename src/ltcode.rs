@@ -78,8 +78,13 @@ impl Encoder {
     /// fn main() {
     ///     use fountaincode::ltcode::{Encoder, EncoderType};
     ///     use self::rand::{thread_rng, Rng};
+    ///     use rand::distributions::Alphanumeric;
     ///
-    ///     let s:String = thread_rng().gen_ascii_chars().take(1_024).collect();
+    ///     let s: String = thread_rng()
+    ///        .sample_iter(&Alphanumeric)
+    ///        .take(1_024)
+    ///        .map(char::from)
+    ///        .collect();
     ///     let buf = s.into_bytes();
     ///
     ///     let mut enc = Encoder::new(buf, 64, EncoderType::Random);
@@ -211,8 +216,13 @@ impl Decoder {
     ///     use fountaincode::ltcode::{Encoder, EncoderType, Decoder};
     ///     use fountaincode::ltcode::CatchResult::*;
     ///     use self::rand::{thread_rng, Rng};
+    ///     use rand::distributions::Alphanumeric;
     ///
-    ///     let s:String = thread_rng().gen_ascii_chars().take(1_024).collect();
+    ///     let s: String = thread_rng()
+    ///        .sample_iter(&Alphanumeric)
+    ///        .take(1_024)
+    ///        .map(char::from)
+    ///        .collect();
     ///     let buf = s.into_bytes();
     ///     let to_compare = buf.clone();
     ///     let length = buf.len();
